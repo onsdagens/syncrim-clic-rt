@@ -3,7 +3,6 @@ use core::arch::global_asm;
 
 use riscv::register::mtvec;
 
-
 #[no_mangle]
 pub unsafe fn _setup_interrupts() {
     mtvec::write(
@@ -36,7 +35,8 @@ static _VECTOR_TABLE: VectorTable = VectorTable {
 };
 
 //ENEST traps the user is expected to provide _interruptx symbols for all x
-global_asm!("
+global_asm!(
+    "
 .text
 handler_0:
         addi    sp, sp, -0x4c   # allocate space for the context on the stack
@@ -276,4 +276,5 @@ handler_3:
         lw      t6, 0x48(sp)
         addi    sp, sp, 0x4c      
         mret                        # return from interrupt
-");
+"
+);
