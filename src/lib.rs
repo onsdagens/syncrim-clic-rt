@@ -11,7 +11,7 @@ pub unsafe fn _setup_interrupts() {
         mtvec::TrapMode::Vectored,
     )
 }
-#[repr(C)]
+#[repr(C, align(4))]
 struct VectorTable {
     pub handler0: unsafe extern "C" fn(),
     pub handler1: unsafe extern "C" fn(), //GPIO
@@ -27,7 +27,7 @@ extern "C" {
 }
 
 //must be accessible over data bus, for now have it here since .text isn't
-#[link_section = ".data"]
+#[link_section = ".vector_table"]
 static _VECTOR_TABLE: VectorTable = VectorTable {
     handler0: handler_0,
     handler1: handler_1,
