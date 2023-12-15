@@ -14,9 +14,9 @@ pub unsafe fn _setup_interrupts() {
 #[repr(C)]
 struct VectorTable {
     pub handler0: unsafe extern "C" fn(),
-    pub handler1: unsafe extern "C" fn(),
-    pub handler2: unsafe extern "C" fn(),
-    pub handler3: unsafe extern "C" fn(),
+    pub handler1: unsafe extern "C" fn(), //GPIO
+    pub handler2: unsafe extern "C" fn(), //TIMER
+    pub handler3: unsafe extern "C" fn(), //SOME
 }
 
 extern "C" {
