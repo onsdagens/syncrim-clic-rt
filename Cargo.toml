@@ -8,4 +8,4 @@ edition = "2021"
 [dependencies]
 riscv = "0.11.0"
 riscv-rt = "0.12.1"
-clic = {path  = "../clic/"}
+clic = {path  = "https://github.com/onsdagens/clic", branch = "regstack"}
