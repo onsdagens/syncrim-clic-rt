@@ -24,7 +24,7 @@ struct VectorTable {
     pub handler6: unsafe extern "C" fn(),
     pub handler7: unsafe extern "C" fn(),
     pub handler8: unsafe extern "C" fn(),
-    pub handler9: unsafe extern "C" fn(),
+    pub MTIME: unsafe extern "C" fn(),
 }
 
 extern "C" {
@@ -37,7 +37,7 @@ extern "C" {
     fn handler_6();
     fn handler_7();
     fn handler_8();
-    fn handler_9();
+    fn handler_MTIME();
 }
 
 extern "C" {
@@ -50,7 +50,7 @@ extern "C" {
     fn Interrupt6();
     fn Interrupt7();
     fn Interrupt8();
-    fn Interrupt9();
+    fn MTIME();
 }
 
 //must be accessible over data bus, for now have it here since .text isn't
@@ -65,9 +65,9 @@ static _VECTOR_TABLE: VectorTable = VectorTable {
     handler6: handler_6,
     handler7: handler_7,
     handler8: handler_8,
-    handler9: handler_9,
+    MTIME: handler_MTIME,
 };
-
+#[allow(non_shorthand_field_patterns)]
 #[link_section = ".vector_table"]
 static _SUPER_VECTOR_TABLE: VectorTable = VectorTable {
     handler0: Interrupt0,
@@ -79,7 +79,7 @@ static _SUPER_VECTOR_TABLE: VectorTable = VectorTable {
     handler6: Interrupt6,
     handler7: Interrupt7,
     handler8: Interrupt8,
-    handler9: Interrupt9,
+    MTIME: MTIME,
 };
 
 global_asm!(
@@ -618,7 +618,7 @@ handler_8:
     lw       t6, 0x48(sp)
     addi     sp, sp, 0x4c
     mret                       # return from interrupt
-handler_9:
+handler_MTIME:
     addi     sp, sp, -0x4c       # allocate space for the context on the stack
     sw       a0, 0x10(sp)        # start by pushing a0 we it to stack CSRs and set threshold
     csrrs    a0, mstatus, x0     # read and stack mstatus
@@ -649,7 +649,7 @@ handler_9:
     sw       t5, 0x44(sp)
     sw       t6, 0x48(sp)
 
-    jal      ra, Interrupt9           # call into the user defined handler
+    jal      ra, MTIME           # call into the user defined handler
 
     lw       a0, 0x00(sp)        # restore CSRs and caller saved registers
     csrrw    x0, mstatus, a0
